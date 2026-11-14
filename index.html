@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Engineering Study Notes</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f3f6fa;
+    color: #14243b;
+}
+
+header {
+    background: #14243b;
+    color: white;
+    padding: 45px 20px;
+    text-align: center;
+}
+
+header h1 {
+    margin-bottom: 10px;
+}
+
+main {
+    max-width: 1000px;
+    margin: auto;
+    padding: 30px 20px;
+}
+
+.search {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 16px;
+}
+
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+button {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    background: #dbe5f2;
+    cursor: pointer;
+}
+
+button.active {
+    background: #335c91;
+    color: white;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+}
+
+.card h2 {
+    margin-bottom: 5px;
+}
+
+.english {
+    color: #64748b;
+}
+
+.tag {
+    color: #335c91;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+footer {
+    text-align: center;
+    padding: 30px;
+    color: #64748b;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>📚 Engineering Study Notes</h1>
+    <p>個人工程學習筆記庫</p>
+    <p>Learn · Review · Improve</p>
+</header>
+
+<main>
+    <h2>探索工程知識</h2>
+    <p>整理重要觀念、公式與範例，讓學習更有效率。</p>
+
+    <input
+        class="search"
+        id="search"
+        placeholder="🔍 搜尋筆記內容..."
+        oninput="renderNotes()"
+    >
+
+    <div class="filters">
+        <button class="active" onclick="setCategory('全部', this)">全部</button>
+        <button onclick="setCategory('資料結構', this)">資料結構</button>
+        <button onclick="setCategory('微積分', this)">微積分</button>
+        <button onclick="setCategory('材料科學', this)">材料科學</button>
+    </div>
+
+    <div class="grid" id="notesGrid"></div>
+</main>
+
+<footer>
+    Engineering Study Notes © 2026
+</footer>
+
+<script>
+const notes = [
+    {
+        id: "ds-stack",
+        category: "資料結構",
+        title: "堆疊",
+        english: "Stack",
+        concept: "後進先出（LIFO），最後放入的元素最先取出。",
+        formula: "Push / Pop：O(1)",
+        example: "瀏覽器的返回上一頁功能。"
+    },
+    {
+        id: "ds-queue",
+        category: "資料結構",
+        title: "佇列",
+        english: "Queue",
+        concept: "先進先出（FIFO），最先進入的元素最先離開。",
+        formula: "Enqueue / Dequeue：O(1)（使用適當資料結構）。",
+        example: "印表機工作排程。"
+    },
+    {
+        id: "cal-derivative",
+        category: "微積分",
+        title: "導數",
+        english: "Derivative",
+        concept: "導數代表函數的瞬間變化率。",
+        formula: "若 f(x)=x^n，則 f'(x)=nx^(n-1)。",
+        example: "f(x)=x³，則 f'(x)=3x²。"
+    },
+    {
+        id: "ms-vacancy",
+        category: "材料科學",
+        title: "空孔缺陷",
+        english: "Vacancy",
+        concept: "晶格中原本應有原子的位置出現空缺。",
+        formula: "Nv = N exp(-Qv/kT)",
+        example: "溫度升高時，平衡空孔濃度通常增加。"
+    }
+];
+
+let currentCategory = "全部";
+
+function setCategory(category, button) {
+    currentCategory = category;
+
+    document.querySelectorAll(".filters button").forEach(btn => {
+        btn.classList.remove("active");
+    });
+
+    button.classList.add("active");
+    renderNotes();
+}
+
+function renderNotes() {
+    const keyword = document.getElementById("search").value.toLowerCase();
+    const container = document.getElementById("notesGrid");
+
+    const filtered = notes.filter(note => {
+        const matchCategory =
+            currentCategory === "全部" ||
+            note.category === currentCategory;
+
+        const text = Object.values(note).join(" ").toLowerCase();
+        return matchCategory && text.includes(keyword);
+    });
+
+    container.innerHTML = filtered.map(note => `
+        <div class="card">
+            <div class="tag">${note.category}</div>
+            <h2>${note.title}</h2>
+            <div class="english">${note.english}</div>
+
+            <p><b>重點觀念：</b><br>${note.concept}</p>
+            <p><b>公式／規則：</b><br>${note.formula}</p>
+            <p><b>應用範例：</b><br>${note.example}</p>
+        </div>
+    `).join("");
+}
+
+renderNotes();
+</script>
+
+</body>
+</html>
